@@ -25,4 +25,7 @@ target_link_libraries(MultiVertexAttribTriangle ${OPENGL_LIBRARIES} glfw GLEW::G
 add_executable(ShaderClassDemo ShaderClassDemo.cpp)
 target_link_libraries(ShaderClassDemo ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
+add_executable(Texture Texture.cpp)
+target_link_libraries(Texture ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
 add_subdirectory(test)
