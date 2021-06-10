@@ -8,7 +8,10 @@ find_package(GLFW3 REQUIRED)
 find_package(GLEW REQUIRED)
 message(STATUS "glew include: ${GLEW_INCLUDE_DIRS}")
 
-include_directories(.)
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
+)
 
 add_executable(HelloTriangle HelloTriangle.cpp)
 target_link_libraries(HelloTriangle ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
@@ -21,3 +24,5 @@ target_link_libraries(MultiVertexAttribTriangle ${OPENGL_LIBRARIES} glfw GLEW::G
 
 add_executable(ShaderClassDemo ShaderClassDemo.cpp)
 target_link_libraries(ShaderClassDemo ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
+add_subdirectory(test)

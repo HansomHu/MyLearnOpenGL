@@ -1,0 +1,3 @@
+[submodule "3rdparty/stb_image"]
+	path = 3rdparty/stb_image
+	url = git@github.com:nothings/stb.git
