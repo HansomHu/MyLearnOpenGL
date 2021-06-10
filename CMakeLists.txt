@@ -8,6 +8,8 @@ find_package(GLFW3 REQUIRED)
 find_package(GLEW REQUIRED)
 message(STATUS "glew include: ${GLEW_INCLUDE_DIRS}")
 
+include_directories(.)
+
 add_executable(HelloTriangle HelloTriangle.cpp)
 target_link_libraries(HelloTriangle ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
@@ -16,3 +18,6 @@ target_link_libraries(HelloEBO ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
 add_executable(MultiVertexAttribTriangle MultiVertexAttribTriangle.cpp)
 target_link_libraries(MultiVertexAttribTriangle ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
+add_executable(ShaderClassDemo ShaderClassDemo.cpp)
+target_link_libraries(ShaderClassDemo ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
