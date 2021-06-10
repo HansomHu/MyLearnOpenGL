@@ -13,3 +13,6 @@ target_link_libraries(HelloTriangle ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
 add_executable(HelloEBO HelloEBO.cpp)
 target_link_libraries(HelloEBO ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
+add_executable(MultiVertexAttribTriangle MultiVertexAttribTriangle.cpp)
+target_link_libraries(MultiVertexAttribTriangle ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
