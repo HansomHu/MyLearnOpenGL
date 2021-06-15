@@ -11,6 +11,7 @@ message(STATUS "glew include: ${GLEW_INCLUDE_DIRS}")
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/glm
 )
 
 add_executable(HelloTriangle HelloTriangle.cpp)
