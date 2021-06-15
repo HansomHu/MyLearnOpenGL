@@ -29,4 +29,7 @@ target_link_libraries(ShaderClassDemo ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 add_executable(Texture Texture.cpp)
 target_link_libraries(Texture ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
+add_executable(Transform2D Transform2D.cpp)
+target_link_libraries(Transform2D ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
 add_subdirectory(test)

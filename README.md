@@ -37,3 +37,10 @@ cd build
 cmake ..
 make
 ```
+
+## Run
+```shell
+# You MUST cd to the directory where the executable file locates, e.g.
+cd /path/to/this/repo/build
+./Transform2D
+```
