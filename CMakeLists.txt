@@ -35,4 +35,7 @@ target_link_libraries(Transform2D ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 add_executable(Transform3D Transform3D.cpp)
 target_link_libraries(Transform3D ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
+add_executable(Transform3DMove Transform3DMove.cpp)
+target_link_libraries(Transform3DMove ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
 add_subdirectory(test)
