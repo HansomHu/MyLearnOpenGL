@@ -241,9 +241,6 @@ int main()
         
         // Draw container
         glBindVertexArray(VAO);
-        GLfloat radius = 10.0f;
-        GLfloat camX = sin(glfwGetTime()) * radius;
-        GLfloat camZ = cos(glfwGetTime()) * radius;
         for (int i = 0; i < 10; ++i) {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
             model = glm::rotate(model, glm::radians(float(glfwGetTime()) * 50.0f), rotateAxis[i]);
