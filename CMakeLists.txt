@@ -32,4 +32,7 @@ target_link_libraries(Texture ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 add_executable(Transform2D Transform2D.cpp)
 target_link_libraries(Transform2D ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
+add_executable(Transform3D Transform3D.cpp)
+target_link_libraries(Transform3D ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
 add_subdirectory(test)
