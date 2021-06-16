@@ -161,6 +161,8 @@ int main()
         // Create transformations
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f));
         transform = glm::rotate(transform, (GLfloat)glm::radians(glfwGetTime() * 50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        float scale = sinf(glfwGetTime()) + 1.2;
+        transform = glm::scale(transform, glm::vec3(scale));
 
         // Get matrix's uniform location and set matrix
         GLint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
