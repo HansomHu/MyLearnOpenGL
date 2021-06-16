@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random> // for random engine
 
 // GLEW
 #define GLEW_STATIC
@@ -160,6 +161,35 @@ int main()
     stbi_image_free(image1);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    std::mt19937 randomEngine = std::mt19937(static_cast<std::mt19937::result_type>(10)); // setup seed
+    // we want to render 10 different cubes each locates at specific position
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
+    // rotate axis
+    glm::vec3 rotateAxis[] = {
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+        glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
+    };
+
     // Game loop
     while (!glfwWindowShouldClose(window))
     {
@@ -184,7 +214,6 @@ int main()
         ourShader.Use();       
 
         // Create MVP matrices
-        glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(float(glfwGetTime()) * 50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
 
@@ -192,13 +221,17 @@ int main()
         GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
         GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
         GLint projectionLoc = glGetUniformLocation(ourShader.Program, "projection");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         
         // Draw container
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(GLfloat));
+        for (int i = 0; i < 10; ++i) {
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
+            model = glm::rotate(model, glm::radians(float(glfwGetTime()) * 50.0f), rotateAxis[i]);
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+            glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(GLfloat));
+        }
         glBindVertexArray(0);
 
         // Swap the screen buffers
