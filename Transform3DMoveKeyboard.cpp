@@ -23,9 +23,19 @@
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void do_movement(GLfloat deltaTime);
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
+
+// Camera parameters
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+glm::vec3 cameraLookAtPoint = glm::vec3(0.0f, 0.0f, -5.0f);
+
+// a keyboard array to store the pressed/released status, true-pressed, false-released
+bool keyboard[1024] = {false};
 
 // The MAIN function, from here we start the application and run the game loop
 int main()
@@ -190,6 +200,8 @@ int main()
         glm::vec3(float(randomEngine() % 10), float(randomEngine() % 10), float(randomEngine() % 10)),
     };
 
+    GLfloat deltaTime = 0.0f;   // interval
+    GLfloat lastFrame = glfwGetTime();   // last frame time point
     // Game loop
     while (!glfwWindowShouldClose(window))
     {
@@ -211,7 +223,12 @@ int main()
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         // Activate shader
-        ourShader.Use();       
+        ourShader.Use();
+
+        deltaTime = glfwGetTime() - lastFrame;
+        lastFrame = glfwGetTime();
+
+        do_movement(deltaTime);
 
         // Create MVP matrices
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
@@ -230,7 +247,7 @@ int main()
         for (int i = 0; i < 10; ++i) {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
             model = glm::rotate(model, glm::radians(float(glfwGetTime()) * 50.0f), rotateAxis[i]);
-            glm::mat4 view = glm::lookAt(glm::vec3(camX, 0, camZ), glm::vec3(0, 0, -5.f), glm::vec3(0, 1, 0));
+            glm::mat4 view = glm::lookAt(cameraPos, cameraLookAtPoint, glm::vec3(0, 1, 0));
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
             glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(GLfloat));
@@ -251,6 +268,30 @@ int main()
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    if (action == GLFW_PRESS) {
+        keyboard[key] = true;
+    } else if (action == GLFW_RELEASE) {
+        keyboard[key] = false;
+    }
+}
+
+// do movement by key
+void do_movement(GLfloat deltaTime) {
+    GLfloat cameraSpeed = 5.0f * deltaTime;
+    cameraFront = cameraLookAtPoint - cameraPos;
+    if (keyboard[GLFW_KEY_W] || keyboard[GLFW_KEY_UP]) {
+        cameraPos += cameraSpeed * cameraFront;
+    }
+    if (keyboard[GLFW_KEY_S] || keyboard[GLFW_KEY_DOWN]) {
+        cameraPos -= cameraSpeed * cameraFront;
+    }
+    if (keyboard[GLFW_KEY_A] || keyboard[GLFW_KEY_LEFT]) {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    if (keyboard[GLFW_KEY_D] || keyboard[GLFW_KEY_RIGHT]) {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
 }
