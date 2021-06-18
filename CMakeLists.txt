@@ -41,4 +41,7 @@ target_link_libraries(Transform3DMove ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 add_executable(Transform3DMoveKeyboard Transform3DMoveKeyboard.cpp)
 target_link_libraries(Transform3DMoveKeyboard ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
+add_executable(Transform3DMoveMouse Transform3DMoveMouse.cpp)
+target_link_libraries(Transform3DMoveMouse ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
 add_subdirectory(test)

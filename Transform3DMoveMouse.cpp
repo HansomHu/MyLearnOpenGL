@@ -23,6 +23,8 @@
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement(GLfloat deltaTime);
 
 // Window dimensions
@@ -33,6 +35,12 @@ glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 glm::vec3 cameraLookAtPoint = glm::vec3(0.0f, 0.0f, -5.0f);
+
+GLfloat yaw = -90.0f; // Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
+GLfloat pitch = 0.0f;
+GLfloat lastX = WIDTH / 2.0;
+GLfloat lastY = HEIGHT / 2.0;
+GLfloat fov = 45.0f;
 
 // a keyboard array to store the pressed/released status, true-pressed, false-released
 bool keyboard[1024] = {false};
@@ -56,6 +64,11 @@ int main()
 
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
+    // GLFW Options
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
@@ -232,7 +245,7 @@ int main()
 
         // Create MVP matrices
         glm::mat4 view = glm::lookAt(cameraPos, cameraLookAtPoint, glm::vec3(0, 1, 0));
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(fov), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
 
         // Get matrix's uniform location and set matrix
         GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
@@ -278,7 +291,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // do movement by key
 void do_movement(GLfloat deltaTime) {
     GLfloat cameraSpeed = 5.0f * deltaTime;
-    cameraFront = cameraLookAtPoint - cameraPos;
     if (keyboard[GLFW_KEY_W] || keyboard[GLFW_KEY_UP]) {
         cameraPos += cameraSpeed * cameraFront;
     }
@@ -290,5 +302,62 @@ void do_movement(GLfloat deltaTime) {
     }
     if (keyboard[GLFW_KEY_D] || keyboard[GLFW_KEY_RIGHT]) {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    cameraLookAtPoint = cameraPos + cameraFront;
+}
+
+bool firstMouse = true;
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    GLfloat xoffset = xpos - lastX;
+    GLfloat yoffset = lastY - ypos; // Reversed since y-coordinates go from bottom to left
+    lastX = xpos;
+    lastY = ypos;
+
+    GLfloat sensitivity = 0.05;	// Change this value to your liking
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw   += xoffset;
+    pitch += yoffset;
+
+    // Make sure that when pitch is out of bounds, screen doesn't get flipped
+    if (pitch > 89.0f)
+    {
+        pitch = 89.0f;
+    }
+    if (pitch < -89.0f)
+    {
+        pitch = -89.0f;
+    }
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front); // no need to do normalize in fact
+    cameraLookAtPoint = cameraPos + cameraFront;
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    if (fov >= 1.0f && fov <= 45.0f)
+    {
+        fov -= yoffset;
+    }
+    if (fov <= 1.0f)
+    {
+        fov = 1.0f;
+    }
+    if (fov >= 45.0f)
+    {
+        fov = 45.0f;
     }
 }
