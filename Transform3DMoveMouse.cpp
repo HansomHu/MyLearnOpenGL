@@ -244,7 +244,15 @@ int main()
         do_movement(deltaTime);
 
         // Create MVP matrices
+#if 1
+        // no camera spinning
         glm::mat4 view = glm::lookAt(cameraPos, cameraLookAtPoint, glm::vec3(0, 1, 0));
+#else
+        // camera spinning
+        auto angle = glm::radians(float(glfwGetTime() * 50.0f));
+        cameraUp = glm::vec3(cosf(angle), sinf(angle), 0.0f);
+        glm::mat4 view = glm::lookAt(cameraPos, cameraLookAtPoint, cameraUp);
+#endif
         glm::mat4 projection = glm::perspective(glm::radians(fov), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
 
         // Get matrix's uniform location and set matrix
