@@ -6,12 +6,34 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLEW REQUIRED)
-message(STATUS "glew include: ${GLEW_INCLUDE_DIRS}")
+
+find_path(ASSIMP_INCLUDE_DIR
+    NAMES assimp/Importer.hpp
+    HINTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/assimp/include
+)
+
+find_library(ASSIMP_LIBRARY
+    NAMES libassimp assimp
+    HINTS ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/assimp/lib
+)
+message(STATUS "ASSIMP_INCLUDE_DIR: ${ASSIMP_INCLUDE_DIR}")
+message(STATUS "ASSIMP_LIBRARY: ${ASSIMP_LIBRARY}")
+
+set(THIRD_PARTY_INCLUDE_DIR
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/glm
+    ${ASSIMP_INCLUDE_DIR}
+)
+
+set(THIRDPARTY_LIBRARIES
+    ${OPENGL_LIBRARIES}
+    glfw
+    GLEW::GLEW
+)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/glm
+    ${THIRD_PARTY_INCLUDE_DIR}
 )
 
 set(RESOURCE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
