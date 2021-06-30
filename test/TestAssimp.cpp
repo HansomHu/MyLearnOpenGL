@@ -12,8 +12,7 @@
 #include <assimp/postprocess.h> // Post processing flags
 #include <assimp/scene.h> // Output data structure
 
-bool DoTheImportThing(const std::string& pFile)
-{
+bool DoTheImportThing(const std::string& pFile) {
     // Create an instance of the Importer class
     Assimp::Importer importer;
     // And have it read the given file with some example postprocessing
@@ -32,8 +31,7 @@ bool DoTheImportThing(const std::string& pFile)
     return true;
 }
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
     DoTheImportThing("/path/to/the/modelfile");
     return 0;
 }

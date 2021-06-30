@@ -10,23 +10,21 @@
 #include <helper/resource.h>
 
 int main(int argc, char** argv) {
-    const std::string inputPath = std::string(RESOURCE_ROOT_DIR) +  "/textures/awesomeface.png";
+    const std::string inputPath = std::string(RESOURCE_ROOT_DIR) + "/textures/awesomeface.png";
     int iw, ih, n;
-    
-    unsigned char *idata = stbi_load(inputPath.c_str(), &iw, &ih, &n, 0);
+
+    unsigned char* idata = stbi_load(inputPath.c_str(), &iw, &ih, &n, 0);
     std::cout << "input image: w x h x n: " << iw << " x " << ih << " x " << n << std::endl;
 
     int ow = iw / 2;
     int oh = ih / 2;
-    auto *odata = (unsigned char *) malloc(ow * oh * n);
+    auto* odata = (unsigned char*)malloc(ow * oh * n);
 
     // this function call doesn't work as you expected, I haven't figured out why...
-    stbir_resize(idata, iw, ih, 0, odata, ow, oh, 0, STBIR_TYPE_UINT8, n, STBIR_ALPHA_CHANNEL_NONE, 0,
-                 STBIR_EDGE_CLAMP, STBIR_EDGE_CLAMP,
-                 STBIR_FILTER_BOX, STBIR_FILTER_BOX,
-                 STBIR_COLORSPACE_SRGB, nullptr);
+    stbir_resize(idata, iw, ih, 0, odata, ow, oh, 0, STBIR_TYPE_UINT8, n, STBIR_ALPHA_CHANNEL_NONE, 0, STBIR_EDGE_CLAMP,
+        STBIR_EDGE_CLAMP, STBIR_FILTER_BOX, STBIR_FILTER_BOX, STBIR_COLORSPACE_SRGB, nullptr);
 
-    std::string outputPath = "awesomeface_resize.png";
+    std::string outputPath = std::string(RESOURCE_ROOT_DIR) + "/../build/awesomeface_resize.png";
     stbi_write_png(outputPath.c_str(), ow, oh, n, idata, 0);
 
     stbi_image_free(idata);

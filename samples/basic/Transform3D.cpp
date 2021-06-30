@@ -28,8 +28,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 // The MAIN function, from here we start the application and run the game loop
-int main()
-{
+int main() {
     // Init GLFW
     glfwInit();
     // Set all the required options for GLFW
@@ -55,12 +54,12 @@ int main()
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);
 
-
     // Build and compile our shader program
     const std::string vshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.vsh";
     const std::string fshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.fsh";
     Shader ourShader(vshFile.c_str(), fshFile.c_str());
 
+    // clang-format off
     // Set up vertex data (and buffer(s)) and attribute pointers
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -105,6 +104,7 @@ int main()
         -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
+    // clang-format on
     GLuint VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -123,17 +123,17 @@ int main()
 
     glBindVertexArray(0); // Unbind VAO
 
-
-    // Load and create a texture 
+    // Load and create a texture
     GLuint texture1;
     GLuint texture2;
     // ====================
     // Texture 1
     // ====================
     glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+    glBindTexture(
+        GL_TEXTURE_2D, texture1); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
     // Set our texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Set texture wrapping to GL_REPEAT
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // Set texture filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -158,13 +158,15 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image1 = stbi_load((resourceDir + "/textures/awesomeface.png").c_str(), &width, &height, &channel, 0);
+    unsigned char* image1 =
+        stbi_load((resourceDir + "/textures/awesomeface.png").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image1);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image1);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     std::mt19937 randomEngine = std::mt19937(static_cast<std::mt19937::result_type>(10)); // setup seed
+    // clang-format off
     // we want to render 10 different cubes each locates at specific position
     glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f),
@@ -178,6 +180,7 @@ int main()
         glm::vec3( 1.5f,  0.2f, -1.5f),
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
+    // clang-format on
 
     // rotate axis
     glm::vec3 rotateAxis[] = {
@@ -194,9 +197,9 @@ int main()
     };
 
     // Game loop
-    while (!glfwWindowShouldClose(window))
-    {
-        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+    while (!glfwWindowShouldClose(window)) {
+        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response
+        // functions
         glfwPollEvents();
         // enable depth test to avoid overlay
         glEnable(GL_DEPTH_TEST);
@@ -214,7 +217,7 @@ int main()
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         // Activate shader
-        ourShader.Use();       
+        ourShader.Use();
 
         // Create MVP matrices
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
@@ -226,7 +229,7 @@ int main()
         GLint projectionLoc = glGetUniformLocation(ourShader.Program, "projection");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        
+
         // Draw container
         glBindVertexArray(VAO);
         for (int i = 0; i < 10; ++i) {
@@ -249,8 +252,7 @@ int main()
 }
 
 // Is called whenever a key is pressed/released via GLFW
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }

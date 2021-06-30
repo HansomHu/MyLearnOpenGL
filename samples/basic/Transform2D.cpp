@@ -27,8 +27,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 // The MAIN function, from here we start the application and run the game loop
-int main()
-{
+int main() {
     // Init GLFW
     glfwInit();
     // Set all the required options for GLFW
@@ -54,12 +53,12 @@ int main()
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);
 
-
     // Build and compile our shader program
     const std::string vshFile = std::string(GLSL_ROOT_DIR) + "/Transform2D.vsh";
     const std::string fshFile = std::string(GLSL_ROOT_DIR) + "/Transform2D.fsh";
     Shader ourShader(vshFile.c_str(), fshFile.c_str());
 
+    // clang-format off
     // Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat vertices[] = {
         // Positions          // Colors           // Texture Coords
@@ -68,9 +67,11 @@ int main()
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
         -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
     };
-    GLuint indices[] = {  // Note that we start from 0!
+    // clang-format on
+    GLuint indices[] = {
+        // Note that we start from 0!
         0, 1, 3, // First Triangle
-        1, 2, 3  // Second Triangle
+        1, 2, 3 // Second Triangle
     };
     GLuint VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -97,17 +98,17 @@ int main()
 
     glBindVertexArray(0); // Unbind VAO
 
-
-    // Load and create a texture 
+    // Load and create a texture
     GLuint texture1;
     GLuint texture2;
     // ====================
     // Texture 1
     // ====================
     glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+    glBindTexture(
+        GL_TEXTURE_2D, texture1); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
     // Set our texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Set texture wrapping to GL_REPEAT
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // Set texture filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -132,23 +133,23 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image1 = stbi_load((resourceDir + "/textures/awesomeface.png").c_str(), &width, &height, &channel, 0);
+    unsigned char* image1 =
+        stbi_load((resourceDir + "/textures/awesomeface.png").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image1);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image1);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Game loop
-    while (!glfwWindowShouldClose(window))
-    {
-        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+    while (!glfwWindowShouldClose(window)) {
+        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response
+        // functions
         glfwPollEvents();
 
         // Render
         // Clear the colorbuffer
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
 
         // Bind Textures using texture units
         glActiveTexture(GL_TEXTURE0);
@@ -159,7 +160,7 @@ int main()
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         // Activate shader
-        ourShader.Use();       
+        ourShader.Use();
 
         // Create transformations
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f));
@@ -170,7 +171,7 @@ int main()
         // Get matrix's uniform location and set matrix
         GLint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-        
+
         // Draw container
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -196,8 +197,7 @@ int main()
 }
 
 // Is called whenever a key is pressed/released via GLFW
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
