@@ -18,8 +18,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Other includes
-#include "helper/shader.h"
-
+#include <helper/shader.h>
+#include <helper/resource.h>
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -57,7 +57,9 @@ int main()
 
 
     // Build and compile our shader program
-    Shader ourShader("../glsl/Transform3D.vsh", "../glsl/Transform3D.fsh");
+    const std::string vshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.vsh";
+    const std::string fshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.fsh";
+    Shader ourShader(vshFile.c_str(), fshFile.c_str());
 
     // Set up vertex data (and buffer(s)) and attribute pointers
     float vertices[] = {
@@ -138,7 +140,8 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
     int width, height, channel;
-    unsigned char* image = stbi_load("../data/container.jpg", &width, &height, &channel, 0);
+    const std::string resourceDir = RESOURCE_ROOT_DIR;
+    unsigned char* image = stbi_load((resourceDir + "/container.jpg").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image);
@@ -155,7 +158,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image1 = stbi_load("../data/awesomeface.png", &width, &height, &channel, 0);
+    unsigned char* image1 = stbi_load((resourceDir + "/awesomeface.png").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image1);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image1);
@@ -214,22 +217,25 @@ int main()
         ourShader.Use();       
 
         // Create MVP matrices
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
 
         // Get matrix's uniform location and set matrix
         GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
         GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
         GLint projectionLoc = glGetUniformLocation(ourShader.Program, "projection");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         
         // Draw container
         glBindVertexArray(VAO);
+        GLfloat radius = 10.0f;
+        GLfloat camX = sin(glfwGetTime()) * radius;
+        GLfloat camZ = cos(glfwGetTime()) * radius;
         for (int i = 0; i < 10; ++i) {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
             model = glm::rotate(model, glm::radians(float(glfwGetTime()) * 50.0f), rotateAxis[i]);
+            glm::mat4 view = glm::lookAt(glm::vec3(camX, 0, camZ), glm::vec3(0, 0, -5.f), glm::vec3(0, 1, 0));
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
             glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(GLfloat));
         }
         glBindVertexArray(0);

@@ -18,13 +18,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Other includes
-#include "helper/shader.h"
-
+#include <helper/shader.h>
+#include <helper/resource.h>
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement(GLfloat deltaTime);
 
 // Window dimensions
@@ -35,12 +33,6 @@ glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 glm::vec3 cameraLookAtPoint = glm::vec3(0.0f, 0.0f, -5.0f);
-
-GLfloat yaw = -90.0f; // Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
-GLfloat pitch = 0.0f;
-GLfloat lastX = WIDTH / 2.0;
-GLfloat lastY = HEIGHT / 2.0;
-GLfloat fov = 45.0f;
 
 // a keyboard array to store the pressed/released status, true-pressed, false-released
 bool keyboard[1024] = {false};
@@ -64,11 +56,6 @@ int main()
 
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-
-    // GLFW Options
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
@@ -80,7 +67,9 @@ int main()
 
 
     // Build and compile our shader program
-    Shader ourShader("../glsl/Transform3D.vsh", "../glsl/Transform3D.fsh");
+    const std::string vshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.vsh";
+    const std::string fshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.fsh";
+    Shader ourShader(vshFile.c_str(), fshFile.c_str());
 
     // Set up vertex data (and buffer(s)) and attribute pointers
     float vertices[] = {
@@ -161,7 +150,8 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
     int width, height, channel;
-    unsigned char* image = stbi_load("../data/container.jpg", &width, &height, &channel, 0);
+    const std::string resourceDir = RESOURCE_ROOT_DIR;
+    unsigned char* image = stbi_load((resourceDir + "/container.jpg").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image);
@@ -178,7 +168,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image1 = stbi_load("../data/awesomeface.png", &width, &height, &channel, 0);
+    unsigned char* image1 = stbi_load((resourceDir + "/awesomeface.png").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image1);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image1);
@@ -244,16 +234,8 @@ int main()
         do_movement(deltaTime);
 
         // Create MVP matrices
-#if 1
-        // no camera spinning
         glm::mat4 view = glm::lookAt(cameraPos, cameraLookAtPoint, glm::vec3(0, 1, 0));
-#else
-        // camera spinning
-        auto angle = glm::radians(float(glfwGetTime() * 50.0f));
-        cameraUp = glm::vec3(cosf(angle), sinf(angle), 0.0f);
-        glm::mat4 view = glm::lookAt(cameraPos, cameraLookAtPoint, cameraUp);
-#endif
-        glm::mat4 projection = glm::perspective(glm::radians(fov), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
 
         // Get matrix's uniform location and set matrix
         GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
@@ -299,6 +281,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // do movement by key
 void do_movement(GLfloat deltaTime) {
     GLfloat cameraSpeed = 5.0f * deltaTime;
+    cameraFront = cameraLookAtPoint - cameraPos;
     if (keyboard[GLFW_KEY_W] || keyboard[GLFW_KEY_UP]) {
         cameraPos += cameraSpeed * cameraFront;
     }
@@ -310,62 +293,5 @@ void do_movement(GLfloat deltaTime) {
     }
     if (keyboard[GLFW_KEY_D] || keyboard[GLFW_KEY_RIGHT]) {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    }
-    cameraLookAtPoint = cameraPos + cameraFront;
-}
-
-bool firstMouse = true;
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = lastY - ypos; // Reversed since y-coordinates go from bottom to left
-    lastX = xpos;
-    lastY = ypos;
-
-    GLfloat sensitivity = 0.05;	// Change this value to your liking
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    yaw   += xoffset;
-    pitch += yoffset;
-
-    // Make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (pitch > 89.0f)
-    {
-        pitch = 89.0f;
-    }
-    if (pitch < -89.0f)
-    {
-        pitch = -89.0f;
-    }
-
-    glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(front); // no need to do normalize in fact
-    cameraLookAtPoint = cameraPos + cameraFront;
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    if (fov >= 1.0f && fov <= 45.0f)
-    {
-        fov -= yoffset;
-    }
-    if (fov <= 1.0f)
-    {
-        fov = 1.0f;
-    }
-    if (fov >= 45.0f)
-    {
-        fov = 45.0f;
     }
 }
