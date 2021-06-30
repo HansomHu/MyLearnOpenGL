@@ -14,6 +14,12 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/glm
 )
 
+set(RESOURCE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
+set(GLSL_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glsl)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/resource.h.in
+               ${CMAKE_CURRENT_SOURCE_DIR}/helper/resource.h @ONLY
+)
+
 add_executable(HelloTriangle HelloTriangle.cpp)
 target_link_libraries(HelloTriangle ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
