@@ -107,7 +107,7 @@ int main()
     // Load image, create texture and generate mipmaps
     int width, height, channel;
     const std::string resourceDir = RESOURCE_ROOT_DIR;
-    unsigned char* image = stbi_load((resourceDir + "/container.jpg").c_str(), &width, &height, &channel, 0);
+    unsigned char* image = stbi_load((resourceDir + "/textures/container.jpg").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image);
@@ -121,7 +121,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load image, create texture and generate mipmaps
-    unsigned char* image1 = stbi_load((resourceDir + "/awesomeface.png").c_str(), &width, &height, &channel, 0);
+    unsigned char* image1 = stbi_load((resourceDir + "/textures/awesomeface.png").c_str(), &width, &height, &channel, 0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image1);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image1);

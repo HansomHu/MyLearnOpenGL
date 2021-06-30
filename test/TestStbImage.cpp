@@ -10,7 +10,7 @@
 #include <helper/resource.h>
 
 int main(int argc, char** argv) {
-    const std::string inputPath = std::string(RESOURCE_ROOT_DIR) +  "/awesomeface.png";
+    const std::string inputPath = std::string(RESOURCE_ROOT_DIR) +  "/textures/awesomeface.png";
     int iw, ih, n;
     
     unsigned char *idata = stbi_load(inputPath.c_str(), &iw, &ih, &n, 0);
