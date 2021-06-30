@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include <helper/shader.h>
+#include <helper/resource.h>
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -44,7 +45,9 @@ int main()
     glViewport(0, 0, WIDTH, HEIGHT);
 
     // load shader source files and compile
-    Shader program("../glsl/ShaderClassDemo.vsh", "../glsl/ShaderClassDemo.fsh");
+    const std::string vshFile = std::string(GLSL_ROOT_DIR) + "/ShaderClassDemo.vsh";
+    const std::string fshFile = std::string(GLSL_ROOT_DIR) + "/ShaderClassDemo.fsh";
+    Shader program(vshFile.c_str(), fshFile.c_str());
 
     // Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat vertices[] = {

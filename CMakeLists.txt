@@ -36,34 +36,11 @@ include_directories(
     ${THIRD_PARTY_INCLUDE_DIR}
 )
 
-add_executable(HelloTriangle HelloTriangle.cpp)
-target_link_libraries(HelloTriangle ${THIRDPARTY_LIBRARIES})
+set(RESOURCE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
+set(GLSL_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glsl)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/resource.h.in
+               ${CMAKE_CURRENT_SOURCE_DIR}/helper/resource.h @ONLY
+)
 
-add_executable(HelloEBO HelloEBO.cpp)
-target_link_libraries(HelloEBO ${THIRDPARTY_LIBRARIES})
-
-add_executable(MultiVertexAttribTriangle MultiVertexAttribTriangle.cpp)
-target_link_libraries(MultiVertexAttribTriangle ${THIRDPARTY_LIBRARIES})
-
-add_executable(ShaderClassDemo ShaderClassDemo.cpp)
-target_link_libraries(ShaderClassDemo ${THIRDPARTY_LIBRARIES})
-
-add_executable(Texture Texture.cpp)
-target_link_libraries(Texture ${THIRDPARTY_LIBRARIES})
-
-add_executable(Transform2D Transform2D.cpp)
-target_link_libraries(Transform2D ${THIRDPARTY_LIBRARIES})
-
-add_executable(Transform3D Transform3D.cpp)
-target_link_libraries(Transform3D ${THIRDPARTY_LIBRARIES})
-
-add_executable(Transform3DMove Transform3DMove.cpp)
-target_link_libraries(Transform3DMove ${THIRDPARTY_LIBRARIES})
-
-add_executable(Transform3DMoveKeyboard Transform3DMoveKeyboard.cpp)
-target_link_libraries(Transform3DMoveKeyboard ${THIRDPARTY_LIBRARIES})
-
-add_executable(Transform3DMoveMouse Transform3DMoveMouse.cpp)
-target_link_libraries(Transform3DMoveMouse ${THIRDPARTY_LIBRARIES})
-
+add_subdirectory(samples)
 add_subdirectory(test)

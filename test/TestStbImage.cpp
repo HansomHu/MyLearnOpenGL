@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -6,8 +7,10 @@
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include <stb_image/stb_image_resize.h>
 
+#include <helper/resource.h>
+
 int main(int argc, char** argv) {
-    const std::string inputPath = "../../data/awesomeface.png";
+    const std::string inputPath = std::string(RESOURCE_ROOT_DIR) +  "/awesomeface.png";
     int iw, ih, n;
     
     unsigned char *idata = stbi_load(inputPath.c_str(), &iw, &ih, &n, 0);
