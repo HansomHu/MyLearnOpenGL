@@ -217,7 +217,7 @@ int main() {
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         // Activate shader
-        ourShader.Use();
+        ourShader.use();
 
         // Create MVP matrices
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);

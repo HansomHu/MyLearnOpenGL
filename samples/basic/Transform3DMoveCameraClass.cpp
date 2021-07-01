@@ -238,31 +238,28 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, texture2);
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
-        // Activate shader
-        ourShader.Use();
-
         deltaTime = glfwGetTime() - lastFrame;
         lastFrame = glfwGetTime();
 
         do_movement(deltaTime);
+
+        // Activate shader
+        ourShader.use();
 
         // Create MVP matrices
         auto view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 1.0f * WIDTH / HEIGHT, 0.1f, 100.0f);
 
         // Get matrix's uniform location and set matrix
-        GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
-        GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
-        GLint projectionLoc = glGetUniformLocation(ourShader.Program, "projection");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
 
         // Draw container
         glBindVertexArray(VAO);
         for (int i = 0; i < 10; ++i) {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
             model = glm::rotate(model, glm::radians(float(glfwGetTime()) * 50.0f), rotateAxis[i]);
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+            ourShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(GLfloat));
         }
         glBindVertexArray(0);

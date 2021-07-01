@@ -85,7 +85,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Draw the triangle
-        program.Use();
+        program.use();
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);

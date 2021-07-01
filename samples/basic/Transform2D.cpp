@@ -160,7 +160,7 @@ int main() {
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         // Activate shader
-        ourShader.Use();
+        ourShader.use();
 
         // Create transformations
         glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.5f, 0.0f));

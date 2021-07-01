@@ -229,7 +229,7 @@ int main() {
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         // Activate shader
-        ourShader.Use();
+        ourShader.use();
 
         deltaTime = glfwGetTime() - lastFrame;
         lastFrame = glfwGetTime();

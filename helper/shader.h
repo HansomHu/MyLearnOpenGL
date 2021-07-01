@@ -62,7 +62,7 @@ public:
         glDeleteShader(fragment);
     }
     // Uses the current shader
-    void Use() { glUseProgram(this->Program); }
+    void use() { glUseProgram(this->Program); }
     // utility uniform functions
     void setBool(const std::string& name, bool value) const {
         glUniform1i(glGetUniformLocation(this->Program, name.c_str()), (int)value);
