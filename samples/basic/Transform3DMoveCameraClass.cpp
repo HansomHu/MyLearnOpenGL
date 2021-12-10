@@ -79,6 +79,9 @@ int main() {
     const std::string vshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.vsh";
     const std::string fshFile = std::string(GLSL_ROOT_DIR) + "/Transform3D.fsh";
     Shader ourShader(vshFile.c_str(), fshFile.c_str());
+    ourShader.use();
+    ourShader.setInt("ourTexture1", 0);
+    ourShader.setInt("ourTexture2", 1);
 
     // clang-format off
     // Set up vertex data (and buffer(s)) and attribute pointers
@@ -230,21 +233,19 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Activate shader
+        ourShader.use();
+
         // Bind Textures using texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-        glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
-        glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         deltaTime = glfwGetTime() - lastFrame;
         lastFrame = glfwGetTime();
 
         do_movement(deltaTime);
-
-        // Activate shader
-        ourShader.use();
 
         // Create MVP matrices
         auto view = camera.GetViewMatrix();

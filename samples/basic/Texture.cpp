@@ -53,6 +53,12 @@ int main() {
     const std::string fshFile = std::string(GLSL_ROOT_DIR) + "/Texture.fsh";
     Shader ourShader(vshFile.c_str(), fshFile.c_str());
 
+    // set the program's texuture uint before while loop
+    ourShader.use();
+    ourShader.setInt("ourTexture1", 0); // style 1, use Shader's method
+    glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1); // style 2, use OpenGL function directly
+
+
     // clang-format off
     // Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat vertices[] = {
@@ -142,16 +148,14 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Activate shader before binding textures
+        ourShader.use();
+
         // Bind Texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture[0]);
-        glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture[1]);
-        glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
-
-        // Activate shader
-        ourShader.use();
 
         // Draw container
         glBindVertexArray(VAO);
