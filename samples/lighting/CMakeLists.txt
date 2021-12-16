@@ -6,3 +6,6 @@ target_link_libraries(lightingDiffuse ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
 add_executable(lightingSpecular lightingSpecular.cpp)
 target_link_libraries(lightingSpecular ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
+add_executable(lightingDiffuseMapSpecular lightingDiffuseMapSpecular.cpp)
+target_link_libraries(lightingDiffuseMapSpecular ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
