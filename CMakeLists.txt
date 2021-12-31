@@ -3,6 +3,7 @@ project(MyOpenGL VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
+find_package(OpenCV REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLEW REQUIRED)
@@ -23,9 +24,11 @@ set(THIRD_PARTY_INCLUDE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
     ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/glm
     ${ASSIMP_INCLUDE_DIR}
+    ${OpenCV_INCLUDE_DIRS}
 )
 
 set(THIRDPARTY_LIBRARIES
+    ${OpenCV_LIBRARIES}
     ${OPENGL_LIBRARIES}
     glfw
     GLEW::GLEW

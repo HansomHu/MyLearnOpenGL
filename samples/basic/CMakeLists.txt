@@ -30,3 +30,6 @@ target_link_libraries(Transform3DMoveMouse ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 
 add_executable(Transform3DMoveCameraClass Transform3DMoveCameraClass.cpp)
 target_link_libraries(Transform3DMoveCameraClass ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+
+add_executable(DumpMipmaps DumpMipmaps.cpp)
+target_link_libraries(DumpMipmaps ${THIRDPARTY_LIBRARIES})
